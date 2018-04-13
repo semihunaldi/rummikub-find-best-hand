@@ -94,8 +94,8 @@ public class HandDistributionFactoryTest {
 
 	@Test
 	public void testLoad() {
-		for(int i = 1; i <= 100_000; i++){
-			if(i % 5000 == 0){
+		for(int i = 1; i <= 20_000; i++){
+			if(i % 2000 == 0){
 				System.out.println("Load Test Iteration : " + i);
 			}
 			testHandDistribution();

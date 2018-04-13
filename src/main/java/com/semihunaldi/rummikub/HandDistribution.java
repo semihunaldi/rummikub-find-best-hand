@@ -171,4 +171,8 @@ public class HandDistribution {
 	public int getCountOfEachColor() {
 		return numberOfCopiesOfTiles * (maxNum - minNum + 1);
 	}
+
+	public List<Player> getPlayers() {
+		return Lists.newArrayList(player1, player2, player3, player4);
+	}
 }
