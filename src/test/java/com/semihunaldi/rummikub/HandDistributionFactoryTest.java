@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  */
 public class HandDistributionFactoryTest {
 
-	private HandDistributionFactory handDistributionFactory = new HandDistributionFactory();
+	private final HandDistributionFactory handDistributionFactory = new HandDistributionFactory();
 
 	@Test
 	public void testHandDistribution() {
@@ -77,8 +77,9 @@ public class HandDistributionFactoryTest {
 
 	@Test
 	public void testLoad() {
+		HandDistribution handDistribution = handDistributionFactory.distributeHand();
 		for(int i = 0; i < 100_000; i++){
-			handDistributionFactory.distributeHand();
+			handDistribution.distribute();
 		}
 	}
 

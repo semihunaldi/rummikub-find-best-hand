@@ -4,6 +4,8 @@ package com.semihunaldi.rummikub;
 /**
  * Created by semihunaldi on 13.04.2018
  */
+
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class HandDistributionFactory {
 
 	private int maxNum = 13;

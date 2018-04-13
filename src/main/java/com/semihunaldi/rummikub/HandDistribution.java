@@ -12,13 +12,14 @@ import java.util.stream.Collectors;
 /**
  * Created by semihunaldi on 13.04.2018
  */
+@SuppressWarnings("WeakerAccess")
 public class HandDistribution {
 
-	private int maxNum;
-	private int minNum;
-	private int totalTileCount;
-	private int numberOfCopiesOfTiles;
-	private int numberOfFakes;
+	private final int maxNum;
+	private final int minNum;
+	private final int totalTileCount;
+	private final int numberOfCopiesOfTiles;
+	private final int numberOfFakes;
 
 	private List<Tile> yellowList = Lists.newArrayList();
 	private List<Tile> blueList = Lists.newArrayList();
