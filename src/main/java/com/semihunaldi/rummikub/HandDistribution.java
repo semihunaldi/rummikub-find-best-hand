@@ -3,6 +3,10 @@ package com.semihunaldi.rummikub;
 import com.google.common.collect.Lists;
 import com.semihunaldi.rummikub.tiles.Tile;
 import com.semihunaldi.rummikub.tiles.TileColor;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Collections;
 import java.util.List;
@@ -13,15 +17,21 @@ import java.util.stream.Collectors;
  * Created by semihunaldi on 13.04.2018
  */
 @SuppressWarnings("WeakerAccess")
+@Setter(AccessLevel.NONE)
+@Data
 public class HandDistribution {
 
-	public static final String JOKER_NAME = "JOKER";
-	public static final String FAKE_PREFIX = "fake-";
+	private static final String JOKER_NAME = "JOKER";
+	private static final String FAKE_PREFIX = "fake-";
+	@Getter(AccessLevel.NONE)
 	private final int maxNum;
+	@Getter(AccessLevel.NONE)
 	private final int minNum;
+	@Getter(AccessLevel.NONE)
 	private final int totalTileCountWithoutFakes;
+	@Getter(AccessLevel.NONE)
 	private final int numberOfCopiesOfTiles;
-
+	@Getter(AccessLevel.NONE)
 	private int id = -1;
 
 	private List<Tile> yellowList = Lists.newArrayList();
@@ -32,9 +42,7 @@ public class HandDistribution {
 
 	private List<Tile> allTiles = Lists.newArrayList();
 	private List<Tile> remainingTiles = Lists.newArrayList();
-
 	private Tile joker;
-
 	private List<Tile> player1;
 	private List<Tile> player2;
 	private List<Tile> player3;
@@ -46,6 +54,14 @@ public class HandDistribution {
 		this.totalTileCountWithoutFakes = totalTileCountWithoutFakes;
 		this.numberOfCopiesOfTiles = numberOfCopiesOfTiles;
 		distribute();
+	}
+
+	private static int getRandomNumberInRange(int min, int max) {
+		if(min >= max){
+			throw new IllegalArgumentException("max must be greater than min");
+		}
+		Random r = new Random();
+		return r.nextInt((max - min) + 1) + min;
 	}
 
 	public void distribute() {
@@ -83,12 +99,9 @@ public class HandDistribution {
 	}
 
 	private void pickJoker() {
-		Random r = new Random();
-		int low = 0;
-		int high = 104; //fakes excluded
-		int random = r.nextInt(high - low) + low;
+		int index = getRandomNumberInRange(0, totalTileCountWithoutFakes - 1);
 		List<Tile> tilesExcludingFakes = allTiles.stream().filter(tile -> !tile.isFake()).collect(Collectors.toList());
-		Tile randomTile = tilesExcludingFakes.get(random);
+		Tile randomTile = tilesExcludingFakes.get(index);
 		int jokerNumber = findJokerNumber(randomTile);
 		final TileColor tileColor = randomTile.getTileColor();
 		List<Tile> jokers = allTiles.stream().filter(tile -> tile.getNumber().equals(jokerNumber) && tile.getTileColor().equals(tileColor)).collect(Collectors.toList());
@@ -100,7 +113,7 @@ public class HandDistribution {
 	}
 
 	private void adjustFakeTiles() {
-		List<Tile> fakeTiles = allTiles.stream().filter(tile -> tile.getTileColor().equals(TileColor.FAKE)).collect(Collectors.toList());
+		List<Tile> fakeTiles = allTiles.stream().filter(Tile::isFake).collect(Collectors.toList());
 		for(Tile fakeTile : fakeTiles){
 			fakeTile.setNumber(joker.getNumber());
 			fakeTile.setTileColor(joker.getTileColor());
@@ -130,7 +143,6 @@ public class HandDistribution {
 
 	private Tile createFakeTile() {
 		Tile tile = new Tile();
-		tile.setTileColor(TileColor.FAKE);
 		tile.setFake(true);
 		id++;
 		tile.setId(id);
@@ -152,27 +164,11 @@ public class HandDistribution {
 		player4 = Lists.newArrayList();
 	}
 
-	public List<Tile> getPlayer1() {
-		return player1;
+	public int getFakeCount() {
+		return allTiles.size() - totalTileCountWithoutFakes;
 	}
 
-	public List<Tile> getPlayer2() {
-		return player2;
-	}
-
-	public List<Tile> getPlayer3() {
-		return player3;
-	}
-
-	public List<Tile> getPlayer4() {
-		return player4;
-	}
-
-	public List<Tile> getRemainingTiles() {
-		return remainingTiles;
-	}
-
-	public Tile getJoker() {
-		return joker;
+	public int getCountOfEachColor() {
+		return numberOfCopiesOfTiles * (maxNum - minNum + 1);
 	}
 }

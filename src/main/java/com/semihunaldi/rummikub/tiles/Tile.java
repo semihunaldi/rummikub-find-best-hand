@@ -1,8 +1,18 @@
 package com.semihunaldi.rummikub.tiles;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 /**
  * Created by semihunaldi on 13.04.2018
  */
+
+@Data
+@EqualsAndHashCode(of = {"tileColor", "number"})
+@ToString(of = {"tileColor", "number", "id"})
+@NoArgsConstructor
 public class Tile {
 
 	private int id = 0;
@@ -17,63 +27,5 @@ public class Tile {
 		this.tileColor = tileColor;
 		this.number = number;
 		this.name = name;
-	}
-
-	public Tile() {
-	}
-
-	public boolean isFake() {
-		return fake;
-	}
-
-	public void setFake(boolean fake) {
-		this.fake = fake;
-	}
-
-	public boolean isJoker() {
-		return joker;
-	}
-
-	public void setJoker(boolean joker) {
-		this.joker = joker;
-	}
-
-	public TileColor getTileColor() {
-		return tileColor;
-	}
-
-	public void setTileColor(TileColor tileColor) {
-		this.tileColor = tileColor;
-	}
-
-	public Integer getNumber() {
-		return number;
-	}
-
-	public void setNumber(Integer number) {
-		this.number = number;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	@Override
-	public String toString() {
-		String joker = isJoker() ? " , JOKER" : "";
-		String fake = isFake() ? " , FAKE" : "";
-		return "Tile{" + tileColor.name().toLowerCase() + "-" + number + joker + fake + ", id=" + id + "}";
 	}
 }
