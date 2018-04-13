@@ -1,0 +1,1 @@
+Project for finding best hand on **rummikub** game.
