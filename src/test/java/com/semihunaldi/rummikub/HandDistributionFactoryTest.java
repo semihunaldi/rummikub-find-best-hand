@@ -1,5 +1,6 @@
 package com.semihunaldi.rummikub;
 
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.semihunaldi.rummikub.tiles.Tile;
 import com.semihunaldi.rummikub.tiles.TileColor;
@@ -19,11 +20,12 @@ public class HandDistributionFactoryTest {
 	@Test
 	public void testHandDistribution() {
 		HandDistribution handDistribution = handDistributionFactory.distributeHand();
+		int fakeCount = joinAll(handDistribution).size() - handDistributionFactory.getTotalTileCountWithoutFakes();
 		Assertions.assertThat(handDistribution.getPlayer1().size()).isEqualTo(15);
 		Assertions.assertThat(handDistribution.getPlayer2().size()).isEqualTo(14);
 		Assertions.assertThat(handDistribution.getPlayer3().size()).isEqualTo(14);
 		Assertions.assertThat(handDistribution.getPlayer4().size()).isEqualTo(14);
-		Assertions.assertThat(handDistribution.getRemainingTiles().size()).isEqualTo(handDistributionFactory.getTotalTileCount() - 15 - 14 - 14 - 14);
+		Assertions.assertThat(handDistribution.getRemainingTiles().size()).isEqualTo(handDistributionFactory.getTotalTileCountWithoutFakes() - 15 - 14 - 14 - 14 + fakeCount);
 	}
 
 	@Test
@@ -50,7 +52,7 @@ public class HandDistributionFactoryTest {
 		HandDistribution handDistribution = handDistributionFactory.distributeHand();
 		List<Tile> tiles = joinAll(handDistribution);
 		List<Tile> fakes = tiles.stream().filter(Tile::isFake).collect(Collectors.toList());
-		Assertions.assertThat(fakes.size()).isEqualTo(handDistributionFactory.getNumberOfFakes());
+		Assertions.assertThat(fakes.size()).isEqualTo(tiles.size() - handDistributionFactory.getTotalTileCountWithoutFakes());
 	}
 
 	@Test
@@ -78,7 +80,7 @@ public class HandDistributionFactoryTest {
 	@Test
 	public void testLoad() {
 		HandDistribution handDistribution = handDistributionFactory.distributeHand();
-		for(int i = 0; i < 100_000; i++){
+		for(int i = 0; i < 1_000_000; i++){
 			handDistribution.distribute();
 		}
 	}
@@ -91,13 +93,13 @@ public class HandDistributionFactoryTest {
 	}
 
 	private List<Tile> joinAll(HandDistribution handDistribution) {
-		List<Tile> all = Lists.newArrayList();
-		all.addAll(handDistribution.getPlayer1());
-		all.addAll(handDistribution.getPlayer2());
-		all.addAll(handDistribution.getPlayer3());
-		all.addAll(handDistribution.getPlayer4());
-		all.addAll(handDistribution.getRemainingTiles());
-		return all;
+		return Lists.newArrayList(Iterables.concat(
+				handDistribution.getPlayer1(),
+				handDistribution.getPlayer2(),
+				handDistribution.getPlayer3(),
+				handDistribution.getPlayer4(),
+				handDistribution.getRemainingTiles())
+		);
 	}
 
 	private void testTiles(List<Tile> tileList) {

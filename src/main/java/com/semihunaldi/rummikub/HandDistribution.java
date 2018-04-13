@@ -15,11 +15,14 @@ import java.util.stream.Collectors;
 @SuppressWarnings("WeakerAccess")
 public class HandDistribution {
 
+	public static final String JOKER_NAME = "JOKER";
+	public static final String FAKE_PREFIX = "fake-";
 	private final int maxNum;
 	private final int minNum;
-	private final int totalTileCount;
+	private final int totalTileCountWithoutFakes;
 	private final int numberOfCopiesOfTiles;
-	private final int numberOfFakes;
+
+	private int id = -1;
 
 	private List<Tile> yellowList = Lists.newArrayList();
 	private List<Tile> blueList = Lists.newArrayList();
@@ -37,12 +40,11 @@ public class HandDistribution {
 	private List<Tile> player3;
 	private List<Tile> player4;
 
-	public HandDistribution(int maxNum, int minNum, int totalTileCount, int numberOfCopiesOfTiles, int numberOfFakes) {
+	public HandDistribution(int maxNum, int minNum, int totalTileCountWithoutFakes, int numberOfCopiesOfTiles) {
 		this.maxNum = maxNum;
 		this.minNum = minNum;
-		this.totalTileCount = totalTileCount;
+		this.totalTileCountWithoutFakes = totalTileCountWithoutFakes;
 		this.numberOfCopiesOfTiles = numberOfCopiesOfTiles;
-		this.numberOfFakes = numberOfFakes;
 		distribute();
 	}
 
@@ -56,14 +58,14 @@ public class HandDistribution {
 	}
 
 	private void createTiles() {
-		int numberOfCycle = (totalTileCount - numberOfFakes) / 2 / (maxNum - minNum + 1) / numberOfCopiesOfTiles;
+		int numberOfCycle = totalTileCountWithoutFakes / 2 / (maxNum - minNum + 1) / numberOfCopiesOfTiles;
 		for(int i = 1; i <= numberOfCycle; i++){
 			yellowList.addAll(createColorTiles(TileColor.YELLOW));
 			blueList.addAll(createColorTiles(TileColor.BLUE));
 			blackList.addAll(createColorTiles(TileColor.BLACK));
 			redList.addAll(createColorTiles(TileColor.RED));
+			fakeList.add(createFakeTile());
 		}
-		fakeList.addAll(createFakeTiles());
 		allTiles.addAll(yellowList);
 		allTiles.addAll(blueList);
 		allTiles.addAll(blackList);
@@ -92,7 +94,7 @@ public class HandDistribution {
 		List<Tile> jokers = allTiles.stream().filter(tile -> tile.getNumber().equals(jokerNumber) && tile.getTileColor().equals(tileColor)).collect(Collectors.toList());
 		for(Tile joker : jokers){
 			joker.setJoker(true);
-			joker.setName("JOKER");
+			joker.setName(JOKER_NAME);
 			this.joker = joker;
 		}
 	}
@@ -103,7 +105,7 @@ public class HandDistribution {
 			fakeTile.setNumber(joker.getNumber());
 			fakeTile.setTileColor(joker.getTileColor());
 			fakeTile.setFake(true);
-			fakeTile.setName("fake-".concat(joker.getTileColor().name()).concat("-").concat(joker.getNumber().toString()));
+			fakeTile.setName(FAKE_PREFIX.concat(joker.getTileColor().name()).concat("-").concat(joker.getNumber().toString()));
 		}
 	}
 
@@ -119,20 +121,20 @@ public class HandDistribution {
 		List<Tile> tiles = Lists.newArrayList();
 		for(int i = minNum; i <= maxNum; i++){
 			Tile tile = new Tile(tileColor, i, tileColor.name().toLowerCase().concat("-").concat(String.valueOf(i)));
+			id++;
+			tile.setId(id);
 			tiles.add(tile);
 		}
 		return tiles;
 	}
 
-	private List<Tile> createFakeTiles() {
-		List<Tile> fakeTiles = Lists.newArrayList();
-		for(int i = 1; i <= numberOfFakes; i++){
-			Tile tile = new Tile();
-			tile.setTileColor(TileColor.FAKE);
-			tile.setFake(true);
-			fakeTiles.add(tile);
-		}
-		return fakeTiles;
+	private Tile createFakeTile() {
+		Tile tile = new Tile();
+		tile.setTileColor(TileColor.FAKE);
+		tile.setFake(true);
+		id++;
+		tile.setId(id);
+		return tile;
 	}
 
 	private void clear() {
