@@ -1,11 +1,13 @@
 package com.semihunaldi.rummikub;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.semihunaldi.rummikub.tiles.Tile;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -39,5 +41,16 @@ public class Util {
 			output.add(sub);
 		}
 		return output;
+	}
+
+	public static <T> Set<T> findDuplicates(List<T> listContainingDuplicates) {
+		final Set<T> resultSet = Sets.newHashSet();
+		final Set<T> set1 = Sets.newHashSet();
+		for(T t : listContainingDuplicates){
+			if(!set1.add(t)){
+				resultSet.add(t);
+			}
+		}
+		return resultSet;
 	}
 }
