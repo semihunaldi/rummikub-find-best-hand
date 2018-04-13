@@ -14,6 +14,6 @@ public class BestHandFinderTest {
 		HandDistributionFactory handDistributionFactory = new HandDistributionFactory();
 		HandDistribution handDistribution = handDistributionFactory.distributeHand();
 		Player bestHand = bestHandFinder.findBestHand(handDistribution);
-		Assertions.assertThat(bestHand).isNull(); //TODO
+		Assertions.assertThat(bestHand).isNotNull();
 	}
 }

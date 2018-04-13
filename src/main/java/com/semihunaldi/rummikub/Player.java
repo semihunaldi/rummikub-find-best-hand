@@ -33,4 +33,13 @@ public class Player {
 	public Player(int playerNumber) {
 		this.playerNumber = playerNumber;
 	}
+
+	private int bestHandScore = 0;
+
+	public void calculateScore() {
+		bestHandScore = sameNumbersDifferentColorsHavingCountGreaterThanTwo.size()
+				+ possibleSameNumbersDifferentColorsGroupingsWithJokers.size()
+				+ differentNumbersSameColorsHavingCountGreaterThanTwo.size()
+				+ possibleDifferentNumbersSameColorsHavingCountGreaterThanTwo.size();
+	}
 }

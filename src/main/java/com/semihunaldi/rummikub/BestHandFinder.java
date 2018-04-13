@@ -7,8 +7,10 @@ import com.semihunaldi.rummikub.tiles.TileColor;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -26,8 +28,16 @@ public class BestHandFinder {
 			groupHandBySameNumbersDifferentColors(player);
 			groupHandByDifferentNumbersSameColors(player);
 			groupByGoingDoubles(player);
+			player.calculateScore();
 		}
-		return null;
+		Optional<Player> max = handDistribution.getPlayers().stream().max(Comparator.comparingInt(Player::getBestHandScore));
+		if(max.isPresent()){
+			Player player = max.get();
+			List<Tile> hand = player.getHand().stream().sorted().collect(Collectors.toList());
+			System.out.println("\n\nBest Hand Player Number : " + player.getPlayerNumber());
+			System.out.println(hand);
+		}
+		return max.orElse(null);
 	}
 
 	private void groupByGoingDoubles(Player player) {
