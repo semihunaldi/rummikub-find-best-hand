@@ -43,10 +43,10 @@ public class HandDistribution {
 	private List<Tile> allTiles = Lists.newArrayList();
 	private List<Tile> remainingTiles = Lists.newArrayList();
 	private Tile joker;
-	private List<Tile> player1;
-	private List<Tile> player2;
-	private List<Tile> player3;
-	private List<Tile> player4;
+	private Player player1 = new Player(1);
+	private Player player2 = new Player(2);
+	private Player player3 = new Player(3);
+	private Player player4 = new Player(4);
 
 	public HandDistribution(int maxNum, int minNum, int totalTileCountWithoutFakes, int numberOfCopiesOfTiles) {
 		this.maxNum = maxNum;
@@ -91,10 +91,10 @@ public class HandDistribution {
 
 	private void assignTilesToPlayers() {
 		Collections.shuffle(allTiles);
-		player1 = allTiles.subList(0, 15);
-		player2 = allTiles.subList(15, 29);
-		player3 = allTiles.subList(29, 43);
-		player4 = allTiles.subList(43, 57);
+		player1.setHand(allTiles.subList(0, 15));
+		player2.setHand(allTiles.subList(15, 29));
+		player3.setHand(allTiles.subList(29, 43));
+		player4.setHand(allTiles.subList(43, 57));
 		remainingTiles = allTiles.subList(57, allTiles.size());
 	}
 
@@ -158,10 +158,10 @@ public class HandDistribution {
 		allTiles = Lists.newArrayList();
 		remainingTiles = Lists.newArrayList();
 		joker = null;
-		player1 = Lists.newArrayList();
-		player2 = Lists.newArrayList();
-		player3 = Lists.newArrayList();
-		player4 = Lists.newArrayList();
+		player1.setHand(Lists.newArrayList());
+		player2.setHand(Lists.newArrayList());
+		player3.setHand(Lists.newArrayList());
+		player4.setHand(Lists.newArrayList());
 	}
 
 	public int getFakeCount() {

@@ -21,10 +21,10 @@ public class HandDistributionFactoryTest {
 	@Test
 	public void testHandDistribution() {
 		HandDistribution handDistribution = handDistributionFactory.distributeHand();
-		Assertions.assertThat(handDistribution.getPlayer1().size()).isEqualTo(15);
-		Assertions.assertThat(handDistribution.getPlayer2().size()).isEqualTo(14);
-		Assertions.assertThat(handDistribution.getPlayer3().size()).isEqualTo(14);
-		Assertions.assertThat(handDistribution.getPlayer4().size()).isEqualTo(14);
+		Assertions.assertThat(handDistribution.getPlayer1().getHand().size()).isEqualTo(15);
+		Assertions.assertThat(handDistribution.getPlayer2().getHand().size()).isEqualTo(14);
+		Assertions.assertThat(handDistribution.getPlayer3().getHand().size()).isEqualTo(14);
+		Assertions.assertThat(handDistribution.getPlayer4().getHand().size()).isEqualTo(14);
 		Assertions.assertThat(handDistribution.getRemainingTiles().size())
 				.isEqualTo(handDistributionFactory.getTotalTileCountWithoutFakes() - 15 - 14 - 14 - 14 + handDistribution.getFakeCount());
 	}
@@ -32,10 +32,10 @@ public class HandDistributionFactoryTest {
 	@Test
 	public void testTilesForNulls() {
 		HandDistribution handDistribution = handDistributionFactory.distributeHand();
-		testTiles(handDistribution.getPlayer1());
-		testTiles(handDistribution.getPlayer2());
-		testTiles(handDistribution.getPlayer3());
-		testTiles(handDistribution.getPlayer4());
+		testTiles(handDistribution.getPlayer1().getHand());
+		testTiles(handDistribution.getPlayer2().getHand());
+		testTiles(handDistribution.getPlayer3().getHand());
+		testTiles(handDistribution.getPlayer4().getHand());
 	}
 
 	@Test
