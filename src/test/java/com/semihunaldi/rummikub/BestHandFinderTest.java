@@ -8,11 +8,12 @@ import org.junit.Test;
  */
 public class BestHandFinderTest {
 
+	private BestHandFinder bestHandFinder = new BestHandFinder();
 	@Test
 	public void testFindBestHand() {
 		HandDistributionFactory handDistributionFactory = new HandDistributionFactory();
 		HandDistribution handDistribution = handDistributionFactory.distributeHand();
-		Player bestHand = BestHandFinder.findBestHand(handDistribution);
+		Player bestHand = bestHandFinder.findBestHand(handDistribution);
 		Assertions.assertThat(bestHand).isNull(); //TODO
 	}
 }

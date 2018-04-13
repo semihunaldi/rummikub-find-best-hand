@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @EqualsAndHashCode(of = {"tileColor", "number"})
 @NoArgsConstructor
-public class Tile {
+public class Tile implements Comparable<Tile> {
 
 	private int id = 0;
 	private TileColor tileColor;
@@ -29,8 +29,13 @@ public class Tile {
 
 	@Override
 	public String toString() {
-		String joker = isJoker() ? " , JOKER" : "";
-		String fake = isFake() ? " , FAKE" : "";
+		String joker = isJoker() ? "-JOKER" : "";
+		String fake = isFake() ? "-FAKE" : "";
 		return tileColor.name().toLowerCase() + "-" + number + joker + fake;
+	}
+
+	@Override
+	public int compareTo(Tile o) {
+		return Integer.compare(this.getNumber(), o.getNumber());
 	}
 }
