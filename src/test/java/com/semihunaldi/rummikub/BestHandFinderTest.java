@@ -40,7 +40,7 @@ public class BestHandFinderTest {
 		List<Tile> handForTest2 = createHandForTest("[red-1, yellow-5, black-2, blue-3, black-6, yellow-13, blue-6, blue-8, red-10, yellow-13, yellow-2, red-4, yellow-1, yellow-4, black-8]");
 		List<Tile> handForTest3 = createHandForTest("[red-12, black-5, black-13, blue-11, black-9, black-4, yellow-8, yellow-2, blue-2, red-6, red-13, red-11, blue-10, red-8]");
 		List<Tile> handForTest4 = createHandForTest("[black-12, blue-9, blue-6, blue-4, black-3, blue-4, red-2, yellow-7, yellow-6, red-6, black-10, red-1, black-11, yellow-5]");
-		preBuiltHandTest(4, handForTest1, handForTest2, handForTest3, handForTest4);
+		preBuiltHandTest(1, handForTest1, handForTest2, handForTest3, handForTest4);
 	}
 
 	@Test

@@ -39,6 +39,7 @@ public class Player {
 		bestHandScore = sameNumbersDifferentColorsHavingCountGreaterThanTwo.size()
 				+ possibleSameNumbersDifferentColorsGroupingsWithJokers.size()
 				+ differentNumbersSameColorsHavingCountGreaterThanTwo.size()
-				+ possibleDifferentNumbersSameColorsHavingCountGreaterThanTwo.size();
+				+ possibleDifferentNumbersSameColorsHavingCountGreaterThanTwo.size()
+				+ duplicates.size() / 2;
 	}
 }
