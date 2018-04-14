@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.semihunaldi.rummikub.tiles.Tile;
 import com.semihunaldi.rummikub.tiles.TileColor;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,6 +19,8 @@ import java.util.stream.Collectors;
 /**
  * Created by semihunaldi on 13.04.2018
  */
+
+@NoArgsConstructor
 public class BestHandFinder {
 
 	private List<Integer> SUPER_LIST = Lists.newArrayList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 1);
@@ -34,7 +37,7 @@ public class BestHandFinder {
 		if(max.isPresent()){
 			Player player = max.get();
 			List<Tile> hand = player.getHand().stream().sorted().collect(Collectors.toList());
-			System.out.println("\n\nBest Hand Player Number : " + player.getPlayerNumber());
+			System.out.println("\nBest Hand Player Number : " + player.getPlayerNumber());
 			System.out.println(hand);
 		}
 		return max.orElse(null);
@@ -169,7 +172,6 @@ public class BestHandFinder {
 			List<Tile> hand = player.getHand();
 			System.out.println("Player Number : " + player.getPlayerNumber());
 			System.out.println(hand);
-			System.out.println();
 		}
 	}
 }

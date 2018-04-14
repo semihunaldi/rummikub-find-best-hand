@@ -10,7 +10,6 @@ import lombok.Setter;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 /**
@@ -56,14 +55,6 @@ public class HandDistribution {
 		distribute();
 	}
 
-	private static int getRandomNumberInRange(int min, int max) {
-		if(min >= max){
-			throw new IllegalArgumentException("max must be greater than min");
-		}
-		Random r = new Random();
-		return r.nextInt((max - min) + 1) + min;
-	}
-
 	public void distribute() {
 		clear();
 		createTiles();
@@ -91,15 +82,39 @@ public class HandDistribution {
 
 	private void assignTilesToPlayers() {
 		Collections.shuffle(allTiles);
-		player1.setHand(allTiles.subList(0, 15));
-		player2.setHand(allTiles.subList(15, 29));
-		player3.setHand(allTiles.subList(29, 43));
-		player4.setHand(allTiles.subList(43, 57));
+		switch(Util.getRandomNumberInRange(1, 4)){
+			case 1:
+				player1.setHand(allTiles.subList(0, 15));
+				player2.setHand(allTiles.subList(15, 29));
+				player3.setHand(allTiles.subList(29, 43));
+				player4.setHand(allTiles.subList(43, 57));
+				break;
+			case 2:
+				player2.setHand(allTiles.subList(0, 15));
+				player1.setHand(allTiles.subList(15, 29));
+				player3.setHand(allTiles.subList(29, 43));
+				player4.setHand(allTiles.subList(43, 57));
+				break;
+			case 3:
+				player3.setHand(allTiles.subList(0, 15));
+				player2.setHand(allTiles.subList(15, 29));
+				player1.setHand(allTiles.subList(29, 43));
+				player4.setHand(allTiles.subList(43, 57));
+				break;
+			case 4:
+				player4.setHand(allTiles.subList(0, 15));
+				player2.setHand(allTiles.subList(15, 29));
+				player3.setHand(allTiles.subList(29, 43));
+				player1.setHand(allTiles.subList(43, 57));
+				break;
+			default:
+				break;
+		}
 		remainingTiles = allTiles.subList(57, allTiles.size());
 	}
 
 	private void pickJoker() {
-		int index = getRandomNumberInRange(0, totalTileCountWithoutFakes - 1);
+		int index = Util.getRandomNumberInRange(0, totalTileCountWithoutFakes - 1);
 		List<Tile> tilesExcludingFakes = allTiles.stream().filter(tile -> !tile.isFake()).collect(Collectors.toList());
 		Tile randomTile = tilesExcludingFakes.get(index);
 		int jokerNumber = findJokerNumber(randomTile);

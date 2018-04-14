@@ -21,10 +21,10 @@ public class HandDistributionFactoryTest {
 	@Test
 	public void testHandDistribution() {
 		HandDistribution handDistribution = handDistributionFactory.distributeHand();
-		Assertions.assertThat(handDistribution.getPlayer1().getHand().size()).isEqualTo(15);
-		Assertions.assertThat(handDistribution.getPlayer2().getHand().size()).isEqualTo(14);
-		Assertions.assertThat(handDistribution.getPlayer3().getHand().size()).isEqualTo(14);
-		Assertions.assertThat(handDistribution.getPlayer4().getHand().size()).isEqualTo(14);
+		Assertions.assertThat(handDistribution.getPlayer1().getHand().size()).isGreaterThanOrEqualTo(14).isLessThanOrEqualTo(15);
+		Assertions.assertThat(handDistribution.getPlayer2().getHand().size()).isGreaterThanOrEqualTo(14).isLessThanOrEqualTo(15);
+		Assertions.assertThat(handDistribution.getPlayer3().getHand().size()).isGreaterThanOrEqualTo(14).isLessThanOrEqualTo(15);
+		Assertions.assertThat(handDistribution.getPlayer4().getHand().size()).isGreaterThanOrEqualTo(14).isLessThanOrEqualTo(15);
 		Assertions.assertThat(handDistribution.getRemainingTiles().size())
 				.isEqualTo(handDistributionFactory.getTotalTileCountWithoutFakes() - 15 - 14 - 14 - 14 + handDistribution.getFakeCount());
 	}
