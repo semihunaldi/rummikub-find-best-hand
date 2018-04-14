@@ -1,8 +1,9 @@
 package com.semihunaldi.rummikub;
 
 import com.google.common.collect.Lists;
-import com.semihunaldi.rummikub.tiles.Tile;
-import com.semihunaldi.rummikub.tiles.TileColor;
+import com.semihunaldi.rummikub.model.Player;
+import com.semihunaldi.rummikub.model.Tile;
+import com.semihunaldi.rummikub.model.TileColor;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
@@ -33,12 +34,6 @@ public class HandDistribution {
 	@Getter(AccessLevel.NONE)
 	private int id = -1;
 
-	private List<Tile> yellowList = Lists.newArrayList();
-	private List<Tile> blueList = Lists.newArrayList();
-	private List<Tile> blackList = Lists.newArrayList();
-	private List<Tile> redList = Lists.newArrayList();
-	private List<Tile> fakeList = Lists.newArrayList();
-
 	private List<Tile> allTiles = Lists.newArrayList();
 	private List<Tile> remainingTiles = Lists.newArrayList();
 	private Tile joker;
@@ -67,17 +62,12 @@ public class HandDistribution {
 	private void createTiles() {
 		int numberOfCycle = totalTileCountWithoutFakes / 2 / (maxNum - minNum + 1) / numberOfCopiesOfTiles;
 		for(int i = 1; i <= numberOfCycle; i++){
-			yellowList.addAll(createColorTiles(TileColor.YELLOW));
-			blueList.addAll(createColorTiles(TileColor.BLUE));
-			blackList.addAll(createColorTiles(TileColor.BLACK));
-			redList.addAll(createColorTiles(TileColor.RED));
-			fakeList.add(createFakeTile());
+			allTiles.addAll(createColorTiles(TileColor.YELLOW));
+			allTiles.addAll(createColorTiles(TileColor.BLUE));
+			allTiles.addAll(createColorTiles(TileColor.BLACK));
+			allTiles.addAll(createColorTiles(TileColor.RED));
+			allTiles.add(createFakeTile());
 		}
-		allTiles.addAll(yellowList);
-		allTiles.addAll(blueList);
-		allTiles.addAll(blackList);
-		allTiles.addAll(redList);
-		allTiles.addAll(fakeList);
 	}
 
 	private void assignTilesToPlayers() {
@@ -165,11 +155,6 @@ public class HandDistribution {
 	}
 
 	private void clear() {
-		yellowList = Lists.newArrayList();
-		blueList = Lists.newArrayList();
-		blackList = Lists.newArrayList();
-		redList = Lists.newArrayList();
-		fakeList = Lists.newArrayList();
 		allTiles = Lists.newArrayList();
 		remainingTiles = Lists.newArrayList();
 		joker = null;

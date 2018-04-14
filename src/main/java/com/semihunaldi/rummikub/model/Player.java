@@ -1,8 +1,7 @@
-package com.semihunaldi.rummikub;
+package com.semihunaldi.rummikub.model;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.semihunaldi.rummikub.tiles.Tile;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,4 +1,4 @@
-package com.semihunaldi.rummikub.tiles;
+package com.semihunaldi.rummikub.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

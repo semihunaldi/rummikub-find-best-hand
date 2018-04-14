@@ -1,4 +1,4 @@
-package com.semihunaldi.rummikub.tiles;
+package com.semihunaldi.rummikub.model;
 
 /**
  * Created by semihunaldi on 13.04.2018

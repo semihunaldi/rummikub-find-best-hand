@@ -1,8 +1,9 @@
 package com.semihunaldi.rummikub;
 
 import com.google.common.collect.Lists;
-import com.semihunaldi.rummikub.tiles.Tile;
-import com.semihunaldi.rummikub.tiles.TileColor;
+import com.semihunaldi.rummikub.model.Player;
+import com.semihunaldi.rummikub.model.Tile;
+import com.semihunaldi.rummikub.model.TileColor;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
