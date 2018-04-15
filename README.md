@@ -1,7 +1,7 @@
 ### Project for finding best hand on _rummikub_ game.
 <br>
 A little explanation about followed alghorithm to find the best hand.
-<br>
+<br><br>
 
 Steps:
 <br>
