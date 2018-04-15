@@ -8,7 +8,7 @@ Steps:
 1. Tiles generated for each color and fake tiles.
 2. Tiles shuffled and joker randomly picked.
 3. Fake tiles adjusted with the picked joker.
-4. Tiles assigned to players.
+4. First user has given 15 tiles who picked randomly, remaining tiles assigned to other players evenly with each count of 14.
 5. Hands printed on console.
 6. For each players hand, the hands are grouped with every possible meaningful combination.
 7. To compare hands with each other, a score system implemented.
