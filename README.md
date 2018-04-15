@@ -15,4 +15,4 @@ Steps:
 8. Every hand, ordered with the best combination.
 9. Best ordered hand report printed on console.
 8. The score system takes account of whether or not hand has joker, double joker, ungrouped tiles count, duplicate eligibility, etc.
-11. The hand with heighest score is the best hand.
+11. The hand with highest score is the best hand.
