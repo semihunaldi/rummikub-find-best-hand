@@ -4,6 +4,7 @@ A little explanation about followed alghorithm to find the best hand.
 <br>
 
 Steps:
+<br>
 1. Tiles generated for each color and fake tiles.
 2. Tiles shuffled and joker randomly picked.
 3. Fake tiles adjusted with the picked joker.
