@@ -23,9 +23,9 @@ public class HandDistribution {
 
 	private static final String JOKER_NAME = "JOKER";
 	private static final String FAKE_PREFIX = "fake-";
-	@Getter(AccessLevel.NONE)
+	@Getter
 	private final int maxNum;
-	@Getter(AccessLevel.NONE)
+	@Getter
 	private final int minNum;
 	@Getter(AccessLevel.NONE)
 	private final int totalTileCountWithoutFakes;
@@ -74,33 +74,33 @@ public class HandDistribution {
 		Collections.shuffle(allTiles);
 		switch(Util.getRandomNumberInRange(1, 4)){
 			case 1:
-				player1.setHand(allTiles.subList(0, 15));
-				player2.setHand(allTiles.subList(15, 29));
-				player3.setHand(allTiles.subList(29, 43));
-				player4.setHand(allTiles.subList(43, 57));
+				player1.setHand(Lists.newArrayList(allTiles.subList(0, 15)));
+				player2.setHand(Lists.newArrayList(allTiles.subList(15, 29)));
+				player3.setHand(Lists.newArrayList(allTiles.subList(29, 43)));
+				player4.setHand(Lists.newArrayList(allTiles.subList(43, 57)));
 				break;
 			case 2:
-				player2.setHand(allTiles.subList(0, 15));
-				player1.setHand(allTiles.subList(15, 29));
-				player3.setHand(allTiles.subList(29, 43));
-				player4.setHand(allTiles.subList(43, 57));
+				player2.setHand(Lists.newArrayList(allTiles.subList(0, 15)));
+				player1.setHand(Lists.newArrayList(allTiles.subList(15, 29)));
+				player3.setHand(Lists.newArrayList(allTiles.subList(29, 43)));
+				player4.setHand(Lists.newArrayList(allTiles.subList(43, 57)));
 				break;
 			case 3:
-				player3.setHand(allTiles.subList(0, 15));
-				player2.setHand(allTiles.subList(15, 29));
-				player1.setHand(allTiles.subList(29, 43));
-				player4.setHand(allTiles.subList(43, 57));
+				player3.setHand(Lists.newArrayList(allTiles.subList(0, 15)));
+				player2.setHand(Lists.newArrayList(allTiles.subList(15, 29)));
+				player1.setHand(Lists.newArrayList(allTiles.subList(29, 43)));
+				player4.setHand(Lists.newArrayList(allTiles.subList(43, 57)));
 				break;
 			case 4:
-				player4.setHand(allTiles.subList(0, 15));
-				player2.setHand(allTiles.subList(15, 29));
-				player3.setHand(allTiles.subList(29, 43));
-				player1.setHand(allTiles.subList(43, 57));
+				player4.setHand(Lists.newArrayList(allTiles.subList(0, 15)));
+				player2.setHand(Lists.newArrayList(allTiles.subList(15, 29)));
+				player3.setHand(Lists.newArrayList(allTiles.subList(29, 43)));
+				player1.setHand(Lists.newArrayList(allTiles.subList(43, 57)));
 				break;
 			default:
 				break;
 		}
-		remainingTiles = allTiles.subList(57, allTiles.size());
+		remainingTiles = Lists.newArrayList(allTiles.subList(57, allTiles.size()));
 	}
 
 	private void pickJoker() {
@@ -162,6 +162,7 @@ public class HandDistribution {
 		player2.setHand(Lists.newArrayList());
 		player3.setHand(Lists.newArrayList());
 		player4.setHand(Lists.newArrayList());
+		id = -1;
 	}
 
 	public int getFakeCount() {

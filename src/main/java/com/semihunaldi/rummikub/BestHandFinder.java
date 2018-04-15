@@ -24,63 +24,48 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class BestHandFinder {
 
-	private List<Integer> SUPER_LIST = Lists.newArrayList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 1);
+	private static final List<Integer> SUPER_LIST = Lists.newArrayList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 1);
 
 	public Player findBestHand(HandDistribution handDistribution) {
-		printHands(handDistribution);
+		Util.printHands(handDistribution);
 		for(Player player : handDistribution.getPlayers()){
 			groupHandBySameNumbersDifferentColors(player);
 			groupHandByDifferentNumbersSameColors(player);
 			groupByGoingDoubles(player);
-			player.calculateScore();
+			player.calculateScore(handDistribution.getMinNum(), handDistribution.getMaxNum());
 		}
-		Optional<Player> max = handDistribution.getPlayers().stream().max(Comparator.comparingInt(Player::getBestHandScore));
-		if(max.isPresent()){
-			Player player = max.get();
+		Optional<Player> max = handDistribution.getPlayers().stream().max(Comparator.comparingDouble(Player::getBestHandScore));
+		max.ifPresent(player -> {
 			List<Tile> hand = player.getHand().stream().sorted().collect(Collectors.toList());
 			System.out.println("\nBest Hand Player Number : " + player.getPlayerNumber());
 			System.out.println(hand);
-		}
+			Util.generateBestHandsReport(player, handDistribution);
+		});
 		return max.orElse(null);
 	}
 
 	private void groupByGoingDoubles(Player player) {
 		Set<Tile> duplicates = Util.findDuplicates(player.getHand());
-		if(Util.playerHasJoker(player)){
-			List<Tile> playerJokers = Util.getPlayerJokers(player);
-			if(playerJokers.size() == 1){
-				if(duplicates.size() * 2 < player.getHand().size()){
-					duplicates.add(playerJokers.get(0));
-				}
-			} else{
-				if(duplicates.size() * 2 < player.getHand().size() - 1){
-					duplicates.add(playerJokers.get(0));
-					duplicates.add(playerJokers.get(1));
-				}
-			}
-		} else{
-			player.setDuplicates(duplicates);
-		}
+		player.setDuplicates(duplicates);
 	}
 
 	private void groupHandByDifferentNumbersSameColors(Player player) {
-		if(Util.playerHasJoker(player)){
+		if(Util.playerHasJoker(player.getHand())){
 			preparePossibleGroupHandByDifferentNumbersSameColors(player);
-		} else{
-			Map<TileColor, List<Tile>> groupedByColor = player.getHand().stream().sorted().collect(Collectors.groupingBy(Tile::getTileColor));
-			List<List<Tile>> group = new ArrayList<>(groupedByColor.values());
-			for(List<Tile> sorted : group){
-				List<List<Integer>> collect = Util.getSubLists(sorted)
-						.stream()
-						.filter(tiles -> tiles.size() > 2)
-						.map(tiles -> tiles.stream().map(Tile::getNumber).collect(Collectors.toList()))
-						.collect(Collectors.toList());
-				for(List<Integer> subList : collect){
-					int index = Collections.indexOfSubList(SUPER_LIST, subList);
-					if(index >= 0){
-						List<Tile> found = sorted.stream().filter(tile -> subList.contains(tile.getNumber())).collect(Collectors.toList());
-						player.getDifferentNumbersSameColorsHavingCountGreaterThanTwo().add(Sets.newHashSet(found));
-					}
+		}
+		Map<TileColor, List<Tile>> groupedByColor = player.getHand().stream().sorted().collect(Collectors.groupingBy(Tile::getTileColor));
+		List<List<Tile>> group = new ArrayList<>(groupedByColor.values());
+		for(List<Tile> sorted : group){
+			List<List<Integer>> collect = Util.getSubLists(sorted)
+					.stream()
+					.filter(tiles -> tiles.size() > 2)
+					.map(tiles -> tiles.stream().map(Tile::getNumber).collect(Collectors.toList()))
+					.collect(Collectors.toList());
+			for(List<Integer> subList : collect){
+				int index = Collections.indexOfSubList(SUPER_LIST, subList);
+				if(index >= 0){
+					List<Tile> found = sorted.stream().filter(tile -> subList.contains(tile.getNumber())).collect(Collectors.toList());
+					player.getDifferentNumbersSameColorsHavingCountGreaterThanTwo().add(Lists.newArrayList(Sets.newHashSet(found)));
 				}
 			}
 		}
@@ -88,91 +73,48 @@ public class BestHandFinder {
 
 	private void preparePossibleGroupHandByDifferentNumbersSameColors(Player player) {
 		List<Tile> playerJokers = Util.getPlayerJokers(player);
-		if(playerJokers.size() == 1){
-			Map<TileColor, List<Tile>> groupedByColor = player.getHand().stream().filter(tile -> !tile.isJoker()).sorted().collect(Collectors.groupingBy(Tile::getTileColor));
-			List<List<Tile>> group = new ArrayList<>(groupedByColor.values());
-			for(List<Tile> sorted : group){
-				List<List<Integer>> collect = Util.getSubLists(sorted)
-						.stream()
-						.filter(tiles -> tiles.size() > 1)
-						.map(tiles -> tiles.stream().map(Tile::getNumber).collect(Collectors.toList()))
-						.collect(Collectors.toList());
-				for(List<Integer> subList : collect){
-					int index = Collections.indexOfSubList(SUPER_LIST, subList);
-					if(index >= 0){
-						List<Tile> found = sorted.stream().filter(tile -> subList.contains(tile.getNumber())).collect(Collectors.toList());
-						found.add(playerJokers.get(0));
-						player.getPossibleDifferentNumbersSameColorsHavingCountGreaterThanTwo().add(Sets.newHashSet(found));
-					}
-				}
-			}
-		} else{
-			Map<TileColor, List<Tile>> groupedByColor = player.getHand().stream().filter(tile -> !tile.isJoker()).sorted().collect(Collectors.groupingBy(Tile::getTileColor));
-			List<List<Tile>> group = new ArrayList<>(groupedByColor.values());
-			for(List<Tile> sorted : group){
-				List<List<Integer>> collect = Util.getSubLists(sorted)
-						.stream()
-						.filter(tiles -> tiles.size() == 1)
-						.map(tiles -> tiles.stream().map(Tile::getNumber).collect(Collectors.toList()))
-						.collect(Collectors.toList());
-				for(List<Integer> subList : collect){
-					int index = Collections.indexOfSubList(SUPER_LIST, subList);
-					if(index >= 0){
-						List<Tile> found = sorted.stream().filter(tile -> subList.contains(tile.getNumber())).collect(Collectors.toList());
-						found.add(playerJokers.get(0));
-						found.add(playerJokers.get(1));
-						player.getPossibleDifferentNumbersSameColorsHavingCountGreaterThanTwo().add(Sets.newHashSet(found));
-					}
+		Map<TileColor, List<Tile>> groupedByColor = player.getHand().stream().filter(tile -> !tile.isJoker()).sorted().collect(Collectors.groupingBy(Tile::getTileColor));
+		List<List<Tile>> group = new ArrayList<>(groupedByColor.values());
+		for(List<Tile> sorted : group){
+			List<List<Integer>> collect = Util.getSubLists(sorted)
+					.stream()
+					.filter(tiles -> tiles.size() >= 1)
+					.map(tiles -> tiles.stream().map(Tile::getNumber).collect(Collectors.toList()))
+					.collect(Collectors.toList());
+			for(List<Integer> subList : collect){
+				int index = Collections.indexOfSubList(SUPER_LIST, subList);
+				if(index >= 0){
+					List<Tile> found = sorted.stream().filter(tile -> subList.contains(tile.getNumber())).collect(Collectors.toList());
+					found.addAll(playerJokers);
+					player.getPossibleDifferentNumbersSameColorsHavingCountGreaterThanTwo().add(found);
 				}
 			}
 		}
 	}
 
 	private void groupHandBySameNumbersDifferentColors(Player player) {
-		if(Util.playerHasJoker(player)){
+		if(Util.playerHasJoker(player.getHand())){
 			List<Tile> playerJokers = Util.getPlayerJokers(player);
 			Map<Integer, List<Tile>> sameNumbersDifferentColors = player.getHand().stream().filter(tile -> !tile.isJoker()).collect(Collectors.groupingBy(Tile::getNumber));
-			if(playerJokers.size() == 1){
-				Set<Set<Tile>> sameNumbersDifferentColorsHavingCountGreaterThanOne = sameNumbersDifferentColors.values()
-						.stream()
-						.map((Function<List<Tile>, Set<Tile>>) Sets::newHashSet)
-						.filter(tiles -> tiles.size() > 1)
-						.collect(Collectors.toSet());
-				sameNumbersDifferentColorsHavingCountGreaterThanOne.forEach(tiles -> {
-					if(tiles.size() < 4){
-						tiles.add(playerJokers.get(0));
-					}
-				});
-				player.getPossibleSameNumbersDifferentColorsGroupingsWithJokers().addAll(sameNumbersDifferentColorsHavingCountGreaterThanOne);
-			} else{
-				Set<Set<Tile>> sameNumbersDifferentColorsHavingCountEqualsOne = sameNumbersDifferentColors.values()
-						.stream()
-						.map((Function<List<Tile>, Set<Tile>>) Sets::newHashSet)
-						.filter(tiles -> tiles.size() == 1)
-						.collect(Collectors.toSet());
-				sameNumbersDifferentColorsHavingCountEqualsOne.forEach(tiles -> {
-					if(tiles.size() < 4){
-						tiles.add(playerJokers.get(1));
-						tiles.add(playerJokers.get(0));
-					}
-				});
-				player.getPossibleSameNumbersDifferentColorsGroupingsWithJokers().addAll(sameNumbersDifferentColorsHavingCountEqualsOne);
-			}
-		} else{
-			Map<Integer, List<Tile>> sameNumbersDifferentColors = player.getHand().stream().collect(Collectors.groupingBy(Tile::getNumber));
-			player.setSameNumbersDifferentColorsHavingCountGreaterThanTwo(sameNumbersDifferentColors.values()
+			List<List<Tile>> sameNumbersDifferentColorsHavingCountGreaterThanOne = sameNumbersDifferentColors.values()
 					.stream()
-					.map((Function<List<Tile>, Set<Tile>>) Sets::newHashSet)
-					.filter(tiles -> tiles.size() > 2)
-					.collect(Collectors.toSet()));
+					.filter(tiles -> tiles.size() >= 1)
+					.collect(Collectors.toList());
+			sameNumbersDifferentColorsHavingCountGreaterThanOne.forEach(tiles -> {
+				if(tiles.size() < 3){
+					tiles.addAll(playerJokers);
+				} else{
+					tiles.add(playerJokers.get(0));
+				}
+			});
+			player.getPossibleSameNumbersDifferentColorsGroupingsWithJokers().addAll(new ArrayList<>(sameNumbersDifferentColorsHavingCountGreaterThanOne));
 		}
-	}
-
-	private void printHands(HandDistribution handDistribution) {
-		for(Player player : handDistribution.getPlayers()){
-			List<Tile> hand = player.getHand();
-			System.out.println("Player Number : " + player.getPlayerNumber());
-			System.out.println(hand);
-		}
+		Map<Integer, List<Tile>> sameNumbersDifferentColors = player.getHand().stream().collect(Collectors.groupingBy(Tile::getNumber));
+		player.setSameNumbersDifferentColorsHavingCountGreaterThanTwo(sameNumbersDifferentColors.values()
+				.stream()
+				.map((Function<List<Tile>, Set<Tile>>) Sets::newHashSet)
+				.filter(tiles -> tiles.size() > 2)
+				.map((Function<Set<Tile>, List<Tile>>) Lists::newArrayList)
+				.collect(Collectors.toSet()));
 	}
 }
