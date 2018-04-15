@@ -2,6 +2,7 @@ package com.semihunaldi.rummikub.model;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.semihunaldi.rummikub.BestHandFinder;
 import com.semihunaldi.rummikub.Util;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,10 +11,14 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.collections4.IterableUtils;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -30,6 +35,7 @@ public class Player implements Serializable {
 	private static double WEIGHT_HAS_DOUBLE_JOKER = 1.4d;
 	private static double WEIGHT_UN_GROUPED_TILE_LEFT = 2d;
 	private static double WEIGHT_DUPLICATE_ELIGIBLE = 2.2d;
+	private static double WEIGHT_POSSIBLE_REMAINING_TILES = 2d;
 
 	private int playerNumber = 1;
 	private List<Tile> hand = Lists.newArrayList();
@@ -52,7 +58,7 @@ public class Player implements Serializable {
 		this.playerNumber = playerNumber;
 	}
 
-	public void calculateScore(int minNum, int maxNum) {
+	public void calculateScore() {
 		prepareBestHand();
 		bestHandScore = 1;
 		int jokerCount = Util.playerJokerCount(this);
@@ -61,12 +67,50 @@ public class Player implements Serializable {
 		} else if(jokerCount == 2){
 			bestHandScore = bestHandScore * WEIGHT_HAS_DOUBLE_JOKER;
 		}
-		int subtractor = maxNum - minNum + 1;
+		int subtractor = getHand().size();
 		int point = subtractor - unGroupedCount;
-		bestHandScore = point * WEIGHT_UN_GROUPED_TILE_LEFT;
+		bestHandScore = bestHandScore * point * WEIGHT_UN_GROUPED_TILE_LEFT;
 		if(duplicates.size() > 4){
 			bestHandScore = bestHandScore * WEIGHT_DUPLICATE_ELIGIBLE;
 		}
+		bestHandScore = bestHandScore + (calculateScoresFromRemainingTiles() * WEIGHT_POSSIBLE_REMAINING_TILES);
+	}
+
+	private int calculateScoresFromRemainingTiles() {
+		int score = 1;
+		if(!bestOrderedHand.isEmpty()){
+			List<Tile> remainingTiles = bestOrderedHand.get(bestOrderedHand.size() - 1);
+			Map<Integer, List<Tile>> sameNumbersDifferentColors = remainingTiles.stream().collect(Collectors.groupingBy(Tile::getNumber));
+			Set<List<Tile>> possibleRemainingColorTiles = sameNumbersDifferentColors.values()
+					.stream()
+					.map((Function<List<Tile>, Set<Tile>>) Sets::newHashSet)
+					.filter(t -> t.size() > 1)
+					.map((Function<Set<Tile>, List<Tile>>) Lists::newArrayList)
+					.collect(Collectors.toSet());
+			score = score * possibleRemainingColorTiles.size();
+			return calculateScoresFromRemainingTilesOfDifferentNumbersSameColors(remainingTiles, score);
+		}
+		return score;
+	}
+
+	private int calculateScoresFromRemainingTilesOfDifferentNumbersSameColors(List<Tile> remainingTiles, int score) {
+		Map<TileColor, List<Tile>> groupedByColor = remainingTiles.stream().sorted().collect(Collectors.groupingBy(Tile::getTileColor));
+		List<List<Tile>> group = new ArrayList<>(groupedByColor.values());
+		for(List<Tile> sorted : group){
+			List<List<Integer>> collect = Util.getSubLists(sorted)
+					.stream()
+					.filter(tiles -> tiles.size() > 2)
+					.map(tiles -> tiles.stream().map(Tile::getNumber).collect(Collectors.toList()))
+					.collect(Collectors.toList());
+			for(List<Integer> subList : collect){
+				int index = Collections.indexOfSubList(BestHandFinder.SUPER_LIST, subList);
+				if(index >= 0){
+					List<Tile> found = sorted.stream().filter(tile -> subList.contains(tile.getNumber())).collect(Collectors.toList());
+					score = score * found.size();
+				}
+			}
+		}
+		return score;
 	}
 
 	private void prepareBestHand() {

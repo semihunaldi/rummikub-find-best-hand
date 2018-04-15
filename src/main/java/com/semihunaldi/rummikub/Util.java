@@ -68,7 +68,7 @@ public class Util {
 	public static void printHands(HandDistribution handDistribution) {
 		for(Player player : handDistribution.getPlayers()){
 			List<Tile> hand = player.getHand();
-			System.out.println("Player Number : " + player.getPlayerNumber());
+			System.out.println("Player Number : " + player.getPlayerNumber() + "  (Hand Score : " + player.getBestHandScore() + ")");
 			System.out.println(hand);
 		}
 	}
@@ -79,7 +79,7 @@ public class Util {
 		System.out.println("    Consecutive count : " + bestHandPlayer.getDifferentNumbersSameColorsHavingCountGreaterThanTwo().size());
 		System.out.println("    Color count : " + bestHandPlayer.getSameNumbersDifferentColorsHavingCountGreaterThanTwo().size());
 		System.out.println("    Possible Consecutive Count : " + bestHandPlayer.getPossibleDifferentNumbersSameColorsHavingCountGreaterThanTwo().size());
-		System.out.println("    Possible Color Count : " + bestHandPlayer.getPossibleDifferentNumbersSameColorsHavingCountGreaterThanTwo().size());
+		System.out.println("    Possible Color Count : " + bestHandPlayer.getPossibleSameNumbersDifferentColorsGroupingsWithJokers().size());
 		System.out.println("    Duplicate Count : " + bestHandPlayer.getDuplicates().size());
 		System.out.println("    Best Ordered Hand : " + bestHandPlayer.getBestOrderedHand());
 		generateSecondBestHandReport(bestHandPlayer, handDistribution);

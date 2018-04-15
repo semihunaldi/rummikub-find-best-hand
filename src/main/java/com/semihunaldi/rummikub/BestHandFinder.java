@@ -24,21 +24,18 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class BestHandFinder {
 
-	private static final List<Integer> SUPER_LIST = Lists.newArrayList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 1);
+	public static final List<Integer> SUPER_LIST = Lists.newArrayList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 1);
 
 	public Player findBestHand(HandDistribution handDistribution) {
-		Util.printHands(handDistribution);
 		for(Player player : handDistribution.getPlayers()){
 			groupHandBySameNumbersDifferentColors(player);
 			groupHandByDifferentNumbersSameColors(player);
 			groupByGoingDoubles(player);
-			player.calculateScore(handDistribution.getMinNum(), handDistribution.getMaxNum());
+			player.calculateScore();
 		}
 		Optional<Player> max = handDistribution.getPlayers().stream().max(Comparator.comparingDouble(Player::getBestHandScore));
 		max.ifPresent(player -> {
-			List<Tile> hand = player.getHand().stream().sorted().collect(Collectors.toList());
-			System.out.println("\nBest Hand Player Number : " + player.getPlayerNumber());
-			System.out.println(hand);
+			Util.printHands(handDistribution);
 			Util.generateBestHandsReport(player, handDistribution);
 		});
 		return max.orElse(null);
@@ -85,8 +82,13 @@ public class BestHandFinder {
 				int index = Collections.indexOfSubList(SUPER_LIST, subList);
 				if(index >= 0){
 					List<Tile> found = sorted.stream().filter(tile -> subList.contains(tile.getNumber())).collect(Collectors.toList());
-					found.addAll(playerJokers);
-					player.getPossibleDifferentNumbersSameColorsHavingCountGreaterThanTwo().add(found);
+					if(playerJokers.size() == 1 && found.size() > 1){
+						found.addAll(playerJokers);
+						player.getPossibleDifferentNumbersSameColorsHavingCountGreaterThanTwo().add(found);
+					} else if(playerJokers.size() > 1 && found.size() >= 1){
+						found.addAll(playerJokers);
+						player.getPossibleDifferentNumbersSameColorsHavingCountGreaterThanTwo().add(found);
+					}
 				}
 			}
 		}
@@ -101,13 +103,18 @@ public class BestHandFinder {
 					.filter(tiles -> tiles.size() >= 1)
 					.collect(Collectors.toList());
 			sameNumbersDifferentColorsHavingCountGreaterThanOne.forEach(tiles -> {
-				if(tiles.size() < 3){
+				if(playerJokers.size() == 1 && tiles.size() >= 2){
 					tiles.addAll(playerJokers);
-				} else{
+					List<Tile> removed = removeDuplicates(tiles);
+					if(removed.size() > 2)
+						player.getPossibleSameNumbersDifferentColorsGroupingsWithJokers().add(removed);
+				} else if(playerJokers.size() > 1 && tiles.size() >= 3){
 					tiles.add(playerJokers.get(0));
+					List<Tile> removed = removeDuplicates(tiles);
+					if(removed.size() > 2)
+						player.getPossibleSameNumbersDifferentColorsGroupingsWithJokers().add(removed);
 				}
 			});
-			player.getPossibleSameNumbersDifferentColorsGroupingsWithJokers().addAll(new ArrayList<>(sameNumbersDifferentColorsHavingCountGreaterThanOne));
 		}
 		Map<Integer, List<Tile>> sameNumbersDifferentColors = player.getHand().stream().collect(Collectors.groupingBy(Tile::getNumber));
 		player.setSameNumbersDifferentColorsHavingCountGreaterThanTwo(sameNumbersDifferentColors.values()
@@ -116,5 +123,15 @@ public class BestHandFinder {
 				.filter(tiles -> tiles.size() > 2)
 				.map((Function<Set<Tile>, List<Tile>>) Lists::newArrayList)
 				.collect(Collectors.toSet()));
+	}
+
+	private List<Tile> removeDuplicates(List<Tile> tiles) {
+		Set<Tile> duplicates = Util.findDuplicates(tiles);
+		Set<Tile> collect = duplicates.stream().filter(tile -> !tile.isJoker()).collect(Collectors.toSet());
+		for(Tile tile : collect){
+			int i = tiles.indexOf(tile);
+			tiles.remove(i);
+		}
+		return tiles;
 	}
 }
