@@ -71,7 +71,6 @@ public class HandDistribution {
 	}
 
 	private void assignTilesToPlayers() {
-		Collections.shuffle(allTiles);
 		switch(Util.getRandomNumberInRange(1, 4)){
 			case 1:
 				player1.setHand(Lists.newArrayList(allTiles.subList(0, 15)));
