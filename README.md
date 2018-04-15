@@ -20,4 +20,4 @@ Steps:
 <br>
 <br>
 
-Note: Test are implemented.
+Note: Test are partially implemented.
